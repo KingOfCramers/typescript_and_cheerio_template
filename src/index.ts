@@ -1,3 +1,4 @@
+import "./config.ts";
 import cheerio from "cheerio";
 import axios, { AxiosResponse } from "axios";
 import validator from "validator";
