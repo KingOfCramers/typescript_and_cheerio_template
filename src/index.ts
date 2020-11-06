@@ -1,26 +1,20 @@
 import "./config.ts";
-import cheerio from "cheerio";
-import axios, { AxiosResponse } from "axios";
-import validator from "validator";
+import { logErrorAndExit } from "./loggers";
+import { getHtml } from "./fetch/getHtml";
+import { Parser } from "./Parser";
 
-const getCheeriosFromUrl = async (
-  url: string,
-  query?: string
-): Promise<cheerio.Element[]> => {
-  if (!validator.isURL(url)) {
-    throw new Error(`Url is not valid: ${url}`);
-  }
-  let html: AxiosResponse<any>;
+//@ts-ignore
+const extractLinksFromHtml = async (str: string): Promise<string[]> => {
   try {
-    html = await axios.get("https://www.google.com");
-    if (html.status === 200) {
-      const $ = cheerio.load(html.data);
-      const divs = $(query).toArray();
-      return divs;
-    } else {
-      throw new Error(`Server returned non-200 code: ${html.status}`);
-    }
+    const html = await getHtml(str, { kind: "puppeteer", headless: true });
+    const parser = new Parser(html);
+    const links = parser.getLinks({ onlyUnique: true });
+    return links;
   } catch (err) {
-    throw new Error(err);
+    logErrorAndExit(err);
   }
 };
+
+extractLinksFromHtml("https://www.masamicooks.com").then((res) =>
+  console.log(res.length)
+);
