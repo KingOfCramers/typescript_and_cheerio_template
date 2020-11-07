@@ -2,20 +2,26 @@ import validator from "validator";
 import axios, { AxiosResponse } from "axios";
 import { setupPuppeteer } from "./puppeteer";
 
-interface Options {
-  kind: "puppeteer" | "axios";
+interface Puppeteer {
+  kind: "puppeteer";
   headless: boolean;
 }
+
+interface Axios {
+  kind: "axios";
+}
+
+type Options = Puppeteer | Axios;
 
 // Given a url, go and get the HTML. Specify either axios or puppeteer
 export const getHtml = async (
   url: string,
-  options?: Options
+  options: Options
 ): Promise<string> => {
   if (!validator.isURL(url)) {
     throw new Error(`Url "${url}" is not valid`);
   }
-  if (options?.kind === "puppeteer") {
+  if (options.kind === "puppeteer") {
     try {
       const { browser, page } = await setupPuppeteer(options.headless);
       await page.goto(url);

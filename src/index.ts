@@ -7,7 +7,8 @@ const extractLinksFromHtml = async (url: string): Promise<string[]> => {
   try {
     const html = await getHtml(url, { kind: "puppeteer", headless: true });
     const parser = new Parser(html);
-    const links = parser.getLinks({ onlyUnique: true });
+    parser.discriminate("div.font-bold"); // Set to only search within div.font-bold tags...
+    const links = parser.getLinks({ onlyUnique: true, limit: 5 });
     return links;
   } catch (err) {
     logError(err);
@@ -16,5 +17,5 @@ const extractLinksFromHtml = async (url: string): Promise<string[]> => {
 };
 
 extractLinksFromHtml("https://www.masamicooks.com").then((res) =>
-  console.log(res.length)
+  console.log(res)
 );
