@@ -1,8 +1,7 @@
-export const logErrorAndContinue = (err: Error): void => {
+export const logWarning = (err: Error): void => {
   console.error(`⚠️`, err.stack);
 };
 
-export const logErrorAndExit = (err: Error): void => {
+export const logError = (err: Error): void => {
   console.error(`❌`, err.stack);
-  process.exit(1);
 };

@@ -1,17 +1,17 @@
 import "./config.ts";
-import { logErrorAndExit } from "./loggers";
+import { logError } from "./loggers";
 import { getHtml } from "./fetch/getHtml";
 import { Parser } from "./Parser";
 
-//@ts-ignore
-const extractLinksFromHtml = async (str: string): Promise<string[]> => {
+const extractLinksFromHtml = async (url: string): Promise<string[]> => {
   try {
-    const html = await getHtml(str, { kind: "puppeteer", headless: true });
+    const html = await getHtml(url, { kind: "puppeteer", headless: true });
     const parser = new Parser(html);
     const links = parser.getLinks({ onlyUnique: true });
     return links;
   } catch (err) {
-    logErrorAndExit(err);
+    logError(err);
+    process.exit(1);
   }
 };
 
